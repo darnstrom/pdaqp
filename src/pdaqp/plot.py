@@ -45,7 +45,7 @@ def slice_region(A,b,ids,vals=None,tol=1e-10):
 
 def plot(CRs, out_id = None, fix_ids=None, fix_vals=None, plotly=False):
     if not plotly_available:
-        warnings.warn("plotly not installed: plot_regions and plot_output will not work")
+        warnings.warn("plotly not installed: plot_regions and plot_solution will not work")
         return 
     N = len(CRs) 
     if N == 0:

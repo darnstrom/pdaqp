@@ -10,7 +10,7 @@ $$
 
 where $H \succ 0$ and $\Theta \triangleq \lbrace l \leq \theta \leq u : A_{\theta} \theta \leq b_{\theta}\rbrace$.
 
-**pdaqp** is based on the Julia package [ParametricDAQP.jl](https://github.com/darnstrom/ParametricDAQP.jl/) and the Pyhon module [juliacall](https://juliapy.github.io/PythonCall.jl/stable/juliacall/). 
+**pdaqp** is based on the Julia package [ParametricDAQP.jl](https://github.com/darnstrom/ParametricDAQP.jl/) and the Python module [juliacall](https://juliapy.github.io/PythonCall.jl/stable/juliacall/). 
 
 ## Example
 The following code solves the mpQP in Section 7.1 in Bemporad et al. 2002
@@ -42,8 +42,8 @@ which will create the following directory:
 │   ├── pointlocation.c
 │   └── pointlocation.h
 ```
-The package also has the optional dependency (plotly)[https://github.com/plotly/plotly.py] which allows the critical regions and the feedback law to be plotted using
+The package also has the optional dependency [plotly](https://github.com/plotly/plotly.py) which allows the critical regions and the optimal solution to be plotted using
 ```python
 mpQP.plot_regions()
-mpQP.plot_output()
+mpQP.plot_solution()
 ```

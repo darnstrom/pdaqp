@@ -43,7 +43,7 @@ class MPQP:
 
     def plot_regions(self, fix_ids = None, fix_vals = None):
         plot(self.CRs, fix_ids=fix_ids,fix_vals=fix_vals)
-    def plot_output(self, out_id=0,fix_ids = None, fix_vals = None):
+    def plot_solution(self, out_id=0,fix_ids = None, fix_vals = None):
         plot(self.CRs, out_id =out_id,fix_ids=fix_ids,fix_vals=fix_vals)
 
     def codegen(self, dir="codegen",fname="pdaqp", float_type="float", int_type="unsigned short"):

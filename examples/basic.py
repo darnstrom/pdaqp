@@ -14,5 +14,5 @@ from pdaqp import MPQP
 mpQP = MPQP(H,f,F,A,b,B,thmin,thmax)
 mpQP.solve()
 mpQP.plot_regions()
-mpQP.plot_output()
+mpQP.plot_solution()
 mpQP.codegen(dir="codegen", fname="pdaqp")
