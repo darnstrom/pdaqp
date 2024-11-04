@@ -1,0 +1,10 @@
+{
+    "julia": "~1.6.7, ~1.7, ~1.8, ~1.9, =1.10.0, ~1.10.3",
+    "packages": {
+        "ParametricDAQP": {
+            "uuid": "19f72acb-e2a9-45c8-96b9-4d5487c8db2e",
+            "url": "https://github.com/darnstrom/ParametricDAQP.jl",
+            "rev": "python" 
+        }
+    }
+}
