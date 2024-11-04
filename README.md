@@ -32,18 +32,13 @@ from pdaqp import MPQP
 mpQP = MPQP(H,f,F,A,b,B,thmin,thmax)
 mpQP.solve()
 ```
-A list of the critical regions can be found in the field `CRs` of `mpQP`
-```python
-regs = pdaqp.critical_regions(sol)
-```
 To construct a binary search tree for point location, and to generate corresponding C-code, run 
-
 ```python
-mpQP.codegen(dir="codegen", fname="pdaqp")
+mpQP.codegen(dir="codegen", fname="pointlocation")
 ```
-Which will create the following directory with generate C-code:
+which will create the following directory:
 ```bash
 ├── codegen
-│   ├── pdaqp.c
-│   └── pdaqp.h
+│   ├── pointlocation.c
+│   └── pointlocation.h
 ```
