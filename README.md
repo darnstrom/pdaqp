@@ -12,6 +12,14 @@ where $H \succ 0$ and $\Theta \triangleq \lbrace l \leq \theta \leq u : A_{\thet
 
 **pdaqp** is based on the Julia package [ParametricDAQP.jl](https://github.com/darnstrom/ParametricDAQP.jl/) and the Python module [juliacall](https://juliapy.github.io/PythonCall.jl/stable/juliacall/). 
 
+## Installation
+```bash
+pip install pdaqp
+```
+If you want to ensure that the plotting dependencies are installed:
+```bash
+pip install pdaqp[plot]
+```
 ## Example
 The following code solves the mpQP in Section 7.1 in Bemporad et al. 2002
 ```python
