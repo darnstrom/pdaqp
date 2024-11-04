@@ -16,7 +16,9 @@ dependencies = [
 plot = [
     "plotly",
 ]
-
+[project.urls]
+Homepage = "https://github.com/darnstrom/pdaqp"
+Issues = "https://github.com/darnstrom/pdaqp/issues"
 
 [build-system]
 requires = ["hatchling"]
