@@ -39,7 +39,7 @@ class MPQP:
                              np.array(cr.x,copy=False, order='F').T,
                              np.array(cr.lam,copy=False, order='F').T,
                              np.array(cr.AS)-1
-                             ) for cr in self.solution] 
+                             ) for cr in ParametricDAQP.get_critical_regions(self.solution)] 
 
     def plot_regions(self, fix_ids = None, fix_vals = None):
         plot(self.CRs, fix_ids=fix_ids,fix_vals=fix_vals)

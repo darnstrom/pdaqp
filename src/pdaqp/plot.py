@@ -54,6 +54,7 @@ def plot(CRs, out_id = None, fix_ids=None, fix_vals=None, plotly=False):
     nth= np.shape(CRs[0].Ath)[1]
     if fix_ids is None: fix_ids = range(2,nth) 
     if fix_vals is None: fix_vals = np.zeros(len(fix_ids))
+    free_ids= list(set(range(nth))-set(fix_ids))
     nfree = nth-len(fix_ids)
     if not nfree ==2: 
         print("Can only plot 2D")
@@ -69,8 +70,12 @@ def plot(CRs, out_id = None, fix_ids=None, fix_vals=None, plotly=False):
             fig.add_trace(go.Scatter(x=xs,y=ys, mode='lines',fill='toself', 
                                      name=f'<b>Region {i}</b><br>Active set: '+str(CRs[i].AS), 
                                      hoverinfo='text'))
+        fig.update_layout(showlegend=False,
+                          xaxis_title=r'$\huge\theta_{'+str(free_ids[0])+'}$',
+                          yaxis_title=r'$\huge\theta_{'+str(free_ids[1])+'}$',
+                          font=dict(size=28),
+                          )
     else: # Plot the feedback
-        free_ids= list(set(range(nth))-set(fix_ids))
         for i,vs in enumerate(CRsV):
             xs = [v[0] for v in vs]
             ys = [v[1] for v in vs]
@@ -79,6 +84,13 @@ def plot(CRs, out_id = None, fix_ids=None, fix_vals=None, plotly=False):
             fig.add_trace(go.Scatter3d(x=xs,y=ys,z=zs, mode='lines',
                                        surfaceaxis=2, hoverinfo='text',
                                        hovertext=f'<b>Region {i}</b><br>Active set: '+str(CRs[i].AS)))
+        #fig.update_layout(zaxis_title=r'$x_{'+str(out_id)+'}$')
+        fig.update_layout(showlegend=False,
+                          scene=dict(
+                              xaxis=dict(title='Parameter '+str(free_ids[0])),
+                              yaxis=dict(title='Parameter '+str(free_ids[1])),
+                              zaxis=dict(title='Minimizer '+str(out_id)),
+                              )
+                          )
 
-    fig.update_layout(showlegend=False)
     fig.show()
