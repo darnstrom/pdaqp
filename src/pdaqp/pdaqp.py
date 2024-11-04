@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from types import ModuleType
 from typing import cast
 from juliacall import Main as jl
+from .plot import plot 
 
 jl = cast(ModuleType, jl)
 jl_version = (jl.VERSION.major, jl.VERSION.minor, jl.VERSION.patch)
@@ -40,8 +41,10 @@ class MPQP:
                              np.array(cr.AS)-1
                              ) for cr in self.solution] 
 
-    def plot_regions(self):
-        jl.display(ParametricDAQP.pplot(self.solution))
+    def plot_regions(self, fix_ids = None, fix_vals = None):
+        plot(self.CRs, fix_ids=fix_ids,fix_vals=fix_vals)
+    def plot_output(self, out_id=0,fix_ids = None, fix_vals = None):
+        plot(self.CRs, out_id =out_id,fix_ids=fix_ids,fix_vals=fix_vals)
 
     def codegen(self, dir="codegen",fname="pdaqp", float_type="float", int_type="unsigned short"):
         ParametricDAQP.codegen(self.solution,dir=dir,fname=fname, 

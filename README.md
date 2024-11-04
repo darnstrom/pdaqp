@@ -1,4 +1,4 @@
-**pdaqp** is a Python module for solving multi-parametric quadratic programs of the form
+**pdaqp** is a Python package for solving multi-parametric quadratic programs of the form
 
 $$
 \begin{align}
@@ -41,4 +41,9 @@ which will create the following directory:
 ├── codegen
 │   ├── pointlocation.c
 │   └── pointlocation.h
+```
+The package also has the optional dependency (plotly)[https://github.com/plotly/plotly.py] which allows the critical regions and the feedback law to be plotted using
+```python
+mpQP.plot_regions()
+mpQP.plot_output()
 ```

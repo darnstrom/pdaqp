@@ -12,6 +12,12 @@ dependencies = [
     "numpy",
 ]
 
+[project.optional-dependencies]
+plot = [
+    "plotly",
+]
+
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
