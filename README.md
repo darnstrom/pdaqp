@@ -19,7 +19,6 @@ pip install pdaqp
 ## Example
 The following code solves the mpQP in Section 7.1 in Bemporad et al. 2002
 ```python
-import pdaqp
 import numpy
 
 H =  numpy.array([[1.5064, 0.4838], [0.4838, 1.5258]])
@@ -51,3 +50,6 @@ The critical regions and the optimal solution can be plotted with the commands
 mpQP.plot_regions()
 mpQP.plot_solution()
 ```
+which create the following plots
+![Critical regions](docs/imgs/example_regions.png)
+![First component of solution ](docs/imgs/example_solution.png)
