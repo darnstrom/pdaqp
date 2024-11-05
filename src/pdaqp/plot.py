@@ -79,8 +79,8 @@ def plot(CRs, out_id = None, fix_ids=None, fix_vals=None, plotly=False):
         for i,vs in enumerate(CRsV):
             xs = [v[0] for v in vs]
             ys = [v[1] for v in vs]
-            c = CRs[i].x[out_id,fix_ids]@fix_vals + CRs[i].x[out_id,-1]
-            zs = [c+CRs[i].x[out_id,free_ids]@v for v in vs] 
+            c = CRs[i].z[out_id,fix_ids]@fix_vals + CRs[i].z[out_id,-1]
+            zs = [c+CRs[i].z[out_id,free_ids]@v for v in vs] 
             fig.add_trace(go.Scatter3d(x=xs,y=ys,z=zs, mode='lines',
                                        surfaceaxis=2, hoverinfo='text',
                                        hovertext=f'<b>Region {i}</b><br>Active set: '+str(CRs[i].AS)))

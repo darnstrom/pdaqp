@@ -2,8 +2,8 @@
 
 $$
 \begin{align}
-\min_{x} &  ~\frac{1}{2}x^{T}Hx+(f+F \theta)^{T}x \\
-\text{s.t.} & ~A x \leq b + B \theta \\
+\min_{z} &  ~\frac{1}{2}z^{T}Hz+(f+F \theta)^{T}z \\
+\text{s.t.} & ~A z \leq b + B \theta \\
 & ~\theta \in \Theta
 \end{align}
 $$
@@ -15,10 +15,6 @@ where $H \succ 0$ and $\Theta \triangleq \lbrace l \leq \theta \leq u : A_{\thet
 ## Installation
 ```bash
 pip install pdaqp
-```
-If you want to ensure that the plotting dependencies are installed:
-```bash
-pip install pdaqp[plot]
 ```
 ## Example
 The following code solves the mpQP in Section 7.1 in Bemporad et al. 2002
@@ -50,7 +46,7 @@ which will create the following directory:
 │   ├── pointlocation.c
 │   └── pointlocation.h
 ```
-The package also has the optional dependency [plotly](https://github.com/plotly/plotly.py) which allows the critical regions and the optimal solution to be plotted using
+The critical regions and the optimal solution can be plotted with the commands
 ```python
 mpQP.plot_regions()
 mpQP.plot_solution()
