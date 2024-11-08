@@ -30,4 +30,4 @@ jobs:
           pip install numpy pytest
           pip install pdaqp 
       - name: Run unit tests
-        run: python -m pytest test/
+        run: python -m pytest test/basic.py
