@@ -75,14 +75,13 @@ class BinarySearchTree:
         ParametricDAQP.codegen(self.jl_bst,dir=dir,fname=fname,
                                float_type=float_type, int_type=int_type)
     def evaluate(self,parameter):
-        th = np.append(parameter,1)
         i = 0
         while self.nodes[i].left_id is not None : # Not a leaf node yet
-            if self.nodes[i].affine_mapping@th >=0:
-                i = self.nodes[i].right_id
-            else:
+            if self.nodes[i].affine_mapping@np.append(parameter,-1) <= 0:
                 i = self.nodes[i].left_id
-        return self.nodes[i].affine_mapping@th
+            else:
+                i = self.nodes[i].right_id
+        return self.nodes[i].affine_mapping@np.append(parameter,1)
 
 
 
@@ -187,17 +186,15 @@ class MPQP:
     def build_tree(self):
         bst = ParametricDAQP.build_tree(self.solution)
         hps = np.array(bst.halfplanes,copy=False, order='F').T
-        feedbacks = np.array(bst.feedbacks,copy=False)
         hp_list = np.array(bst.hp_list,copy=True)-1
         jump_list = np.array(bst.jump_list,copy=True)-1
-        print(feedbacks)
 
         nodes = [ BSTNode(None,None,None,None) for i in range(len(hp_list))]
         leaf_ids = []
 
         for i in range(len(hp_list)):
             if jump_list[i] == 0: # Is a leaf node
-                nodes[i].affine_mapping =np.array(feedbacks[hp_list[i]],copy=False, order='F').T
+                nodes[i].affine_mapping =np.array(bst.feedbacks[hp_list[i]],copy=False, order='F').T
                 leaf_ids.append(i)
             else:
                 rid,lid = jump_list[i],jump_list[i]+1
