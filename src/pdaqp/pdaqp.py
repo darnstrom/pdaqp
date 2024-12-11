@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from types import ModuleType
 from typing import cast
 from juliacall import Main as jl
+from juliacall import AnyValue
 from .plot import plot 
 
 jl = cast(ModuleType, jl)
@@ -24,12 +25,92 @@ class CriticalRegion:
     lam: np.ndarray
     AS: np.ndarray
 
+@dataclass
+class BSTNode:
+    """ A node in a binary search tree
+
+    Attributes:
+        parent_id: id of parent
+        right_id: id of left child (corresponds to affine_mapping*(theta,1) >= 0)
+        left_id: id of left child (corresponds to affine_mapping*(theta,1) <= 0)
+        affine_mapping: if leaf node maps (theta,1) -> solution,
+            if not leaf node if defines the half plane that determines the branching
+
+    """
+    parent_id: int
+    left_id: int
+    right_id: int
+    affine_mapping: np.ndarray
+
+@dataclass
+class BinarySearchTree:
+    """ A representation of the binary search tree in Python
+    used for point location
+
+    Attributes:
+        nodes: List of nodes that comprise the tree
+        depth: the depth of the tree
+        leaf_ids: ids of nodes that are leaf nodes
+        jl_bst: the pure Julia representation of the bst
+    """
+    nodes: list
+    depth: int
+    leaf_ids: list
+    jl_bst : AnyValue
+
+    def codegen(self, dir="codegen",fname="pdaqp", float_type="float", int_type="unsigned short"):
+        """Generates C-code for performing the pointlocation.
+
+        In the generated .c contains data for the binary search and the function
+        {fname}_evaluate(parameter,solution) which performs the point location
+          "parameter" is the parameter theta (a pointer to a float array)
+          "solution" is where the solution z is stored  (a pointer to a float array)
+
+        Args:
+            dir: directory where the generated code should be stored.
+            fname: name of the .c and .h files. Also serves as a prefix in the generated code.
+            float_type: type of floating point number that is used in the C-code.
+            int_type: type of integer that is used in the C-code.
+        """
+        ParametricDAQP.codegen(self.jl_bst,dir=dir,fname=fname,
+                               float_type=float_type, int_type=int_type)
+    def evaluate(self,parameter):
+        th = np.append(parameter,1)
+        i = 0
+        while self.nodes[i].left_id is not None : # Not a leaf node yet
+            if self.nodes[i].affine_mapping@th >=0:
+                i = self.nodes[i].right_id
+            else:
+                i = self.nodes[i].left_id
+        return self.nodes[i].affine_mapping@th
+
+
+
 class MPQP:
+    """ A Multi-parametric quadratic program
+
+    minimize_x  0.5 x' H x + (f + F theta)'x
+    subject to  A x <= b + B theta
+
+    The parameter theta is in the set
+    TH0 defined by  thmin<= theta <=thmax
+
+    Attributes:
+        mpQP: The problem data H,f,F,A,b,B that defines the mpQP
+        TH0: The bounds thmin,thmax that defines the set of parameters of interest
+        CRs: The critical regions that comprise the solution of the mpQP
+        solution: The solution structure directly from Julia
+        solution_info: Information from the solving process
+    """
     mpQP:MPQPDATA
     TH0:TH
+    CRs:list
+    solution:AnyValue
+    solution_info:AnyValue
     def __init__(self, H,f,F,A,b,B, thmin,thmax, bounds_table=None, out_inds=None):
         self.mpQP = MPQPDATA(H,f,F,A,b,B,bounds_table,out_inds)
         self.TH0  = TH(thmin,thmax)
+        CRs = None
         self.solution = None
         self.solution_info = None
 
@@ -102,3 +183,26 @@ class MPQP:
         """
         ParametricDAQP.codegen(self.solution,dir=dir,fname=fname, 
                                float_type=float_type, int_type=int_type)
+
+    def build_tree(self):
+        bst = ParametricDAQP.build_tree(self.solution)
+        hps = np.array(bst.halfplanes,copy=False, order='F').T
+        feedbacks = np.array(bst.feedbacks,copy=False)
+        hp_list = np.array(bst.hp_list,copy=True)-1
+        jump_list = np.array(bst.jump_list,copy=True)-1
+        print(feedbacks)
+
+        nodes = [ BSTNode(None,None,None,None) for i in range(len(hp_list))]
+        leaf_ids = []
+
+        for i in range(len(hp_list)):
+            if jump_list[i] == 0: # Is a leaf node
+                nodes[i].affine_mapping =np.array(feedbacks[hp_list[i]],copy=False, order='F').T
+                leaf_ids.append(i)
+            else:
+                rid,lid = jump_list[i],jump_list[i]+1
+                nodes[i].right_id,nodes[i].left_id  = rid,lid
+                nodes[i].affine_mapping = hps[hp_list[i],:]
+                nodes[rid].parent_id, nodes[lid].parent_id = i,i
+
+        return BinarySearchTree(nodes,bst.depth,leaf_ids,bst)
