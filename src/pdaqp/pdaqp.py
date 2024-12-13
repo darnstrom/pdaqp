@@ -14,7 +14,7 @@ jl_version = (jl.VERSION.major, jl.VERSION.minor, jl.VERSION.patch)
 jl.seval("using ParametricDAQP")
 ParametricDAQP = jl.ParametricDAQP
 
-MPQPDATA = namedtuple('MPQPDATA',['H','f','F','A','b','B','bounds_table','out_inds'])
+MPQPDATA = namedtuple('MPQPDATA',['H','f','F','A','b','B','bounds_table','out_inds','eq_ids'])
 TH = namedtuple('TH', ['lb', 'ub'])
 
 @dataclass
@@ -31,8 +31,8 @@ class BSTNode:
 
     Attributes:
         parent_id: id of parent
-        right_id: id of left child (corresponds to affine_mapping*(theta,1) >= 0)
-        left_id: id of left child (corresponds to affine_mapping*(theta,1) <= 0)
+        left_id: id of left child (corresponds to affine_mapping*(theta,-1) <= 0)
+        right_id: id of left child (corresponds to affine_mapping*(theta,-1) >= 0)
         affine_mapping: if leaf node maps (theta,1) -> solution,
             if not leaf node if defines the half plane that determines the branching
 
@@ -106,8 +106,11 @@ class MPQP:
     CRs:list
     solution:AnyValue
     solution_info:AnyValue
-    def __init__(self, H,f,F,A,b,B, thmin,thmax, bounds_table=None, out_inds=None):
-        self.mpQP = MPQPDATA(H,f,F,A,b,B,bounds_table,out_inds)
+    def __init__(self, H,f,F,A,b,B, thmin,thmax, bounds_table=None, out_inds=None, eq_inds=None):
+        if out_inds is not None: out_inds = [i+1 for i in out_inds]
+        if eq_inds is not None: eq_inds = [i+1 for i in eq_inds]
+
+        self.mpQP = MPQPDATA(H,f,F,A,b,B,bounds_table,out_inds,eq_inds)
         self.TH0  = TH(thmin,thmax)
         CRs = None
         self.solution = None
