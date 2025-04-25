@@ -58,3 +58,18 @@ which create the following plots
 <p align="center">
   <img src="https://github.com/darnstrom/pdaqp/raw/docs/docs/imgs/example_solution.png" width="600" alt="solution_component" align="center"/>
 </p>
+## Citation
+If you use the package in your work, consider citing the following paper
+
+```
+@inproceedings{arnstrom2024pdaqp,
+  author={Arnström, Daniel and Axehill, Daniel},
+  booktitle={2024 IEEE 63rd Conference on Decision and Control (CDC)}, 
+  title={A High-Performant Multi-Parametric Quadratic Programming Solver}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={303-308},
+}
+```
+
