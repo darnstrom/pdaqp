@@ -17,6 +17,21 @@ where $H \succ 0$ and $\Theta \triangleq \lbrace l \leq \theta \leq u : A_{\thet
 ```bash
 pip install pdaqp
 ```
+## Citation
+If you use the package in your work, consider citing the following paper
+
+```
+@inproceedings{arnstrom2024pdaqp,
+  author={Arnström, Daniel and Axehill, Daniel},
+  booktitle={2024 IEEE 63rd Conference on Decision and Control (CDC)}, 
+  title={A High-Performant Multi-Parametric Quadratic Programming Solver}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={303-308},
+}
+```
+
 ## Example
 The following code solves the mpQP in Section 7.1 in Bemporad et al. 2002
 ```python
@@ -53,23 +68,9 @@ mpQP.plot_solution()
 ```
 which create the following plots
 <p align="center">
-  <img src="https://github.com/darnstrom/pdaqp/raw/docs/docs/imgs/example_regions.png" width="600" alt="critical_regions" align="center"/>
+  <img src="https://github.com/darnstrom/pdaqp/blob/main/docs/imgs/example_regions.png?raw=true" width="600" alt="critical_regions" align="center"/>
 </p>
 <p align="center">
-  <img src="https://github.com/darnstrom/pdaqp/raw/docs/docs/imgs/example_solution.png" width="600" alt="solution_component" align="center"/>
+  <img src="https://github.com/darnstrom/pdaqp/blob/main/docs/imgs/example_solution.png?raw=true" width="600" alt="solution_component" align="center"/>
 </p>
-## Citation
-If you use the package in your work, consider citing the following paper
-
-```
-@inproceedings{arnstrom2024pdaqp,
-  author={Arnström, Daniel and Axehill, Daniel},
-  booktitle={2024 IEEE 63rd Conference on Decision and Control (CDC)}, 
-  title={A High-Performant Multi-Parametric Quadratic Programming Solver}, 
-  year={2024},
-  volume={},
-  number={},
-  pages={303-308},
-}
-```
 
