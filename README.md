@@ -71,6 +71,6 @@ which create the following plots
   <img src="https://github.com/darnstrom/pdaqp/blob/main/docs/imgs/example_regions.png?raw=true" width="600" alt="critical_regions" align="center"/>
 </p>
 <p align="center">
-  <img src="https://github.com/darnstrom/pdaqp/raw/docs/docs/imgs/example_solution.png?raw=true" width="600" alt="solution_component" align="center"/>
+  <img src="https://github.com/darnstrom/pdaqp/blob/main/docs/imgs/example_solution.png?raw=true" width="600" alt="solution_component" align="center"/>
 </p>
 
