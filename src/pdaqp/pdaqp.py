@@ -190,7 +190,7 @@ class MPQP:
         bst = ParametricDAQP.build_tree(self.solution)
         hps = np.array(bst.halfplanes,copy=False, order='F').T
         hp_list = np.array(bst.hp_list,copy=True)-1
-        jump_list = np.array(bst.jump_list,copy=True)-1
+        jump_list = np.array(bst.jump_list,copy=True)
 
         nodes = [ BSTNode(None,None,None,None) for i in range(len(hp_list))]
         leaf_ids = []
@@ -200,7 +200,7 @@ class MPQP:
                 nodes[i].affine_mapping =np.array(bst.feedbacks[hp_list[i]],copy=False, order='F').T
                 leaf_ids.append(i)
             else:
-                rid,lid = jump_list[i],jump_list[i]+1
+                rid,lid = i+jump_list[i],i+jump_list[i]+1
                 nodes[i].right_id,nodes[i].left_id  = rid,lid
                 nodes[i].affine_mapping = hps[hp_list[i],:]
                 nodes[rid].parent_id, nodes[lid].parent_id = i,i
