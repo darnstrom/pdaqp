@@ -169,7 +169,7 @@ class MPQP:
         else:
             print('Plotting backend '+backend+ ' unknown')
 
-    def codegen(self, dir="codegen",fname="pdaqp", float_type="float", int_type="unsigned short"):
+    def codegen(self, dir="codegen",fname="pdaqp", float_type="float", int_type="unsigned short", max_reals=1e12):
         """ Forms a binary search tree and generates C-code for performing the pointlocation.
 
         In the generated .c contains data for the binary search and the function
@@ -182,9 +182,10 @@ class MPQP:
             fname: name of the .c and .h files. Also serves as a prefix in the generated code. 
             float_type: type of floating point number that is used in the C-code. 
             int_type: type of integer that is used in the C-code.
+            max_reals: upper limit on the number of real numbers
         """
-        ParametricDAQP.codegen(self.solution,dir=dir,fname=fname, 
-                               float_type=float_type, int_type=int_type)
+        return ParametricDAQP.codegen(self.solution,dir=dir,fname=fname,
+                               float_type=float_type, int_type=int_type, max_reals=max_reals)
 
     def build_tree(self):
         bst = ParametricDAQP.build_tree(self.solution)
