@@ -58,7 +58,7 @@ class BinarySearchTree:
     leaf_ids: list
     jl_bst : AnyValue
 
-    def codegen(self, dir="codegen",fname="pdaqp", float_type="float", int_type="unsigned short"):
+    def codegen(self, dir="codegen",fname="pdaqp", float_type="float", int_type="unsigned short",dual=False, bfs=True):
         """Generates C-code for performing the pointlocation.
 
         In the generated .c contains data for the binary search and the function
@@ -73,7 +73,7 @@ class BinarySearchTree:
             int_type: type of integer that is used in the C-code.
         """
         ParametricDAQP.codegen(self.jl_bst,dir=dir,fname=fname,
-                               float_type=float_type, int_type=int_type)
+                               float_type=float_type, int_type=int_type, dual=dual, bfs=bfs)
     def evaluate(self,parameter):
         i = 0
         while self.nodes[i].left_id is not None : # Not a leaf node yet
