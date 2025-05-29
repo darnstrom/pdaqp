@@ -170,7 +170,7 @@ class MPQP:
             print('Plotting backend '+backend+ ' unknown')
 
     def codegen(self, dir="codegen",fname="pdaqp", float_type="float", int_type="unsigned short",
-                max_reals=1e12,dual=False, bfs=True):
+                max_reals=1e12,dual=False, bfs=True, clipping=False):
         """ Forms a binary search tree and generates C-code for performing the pointlocation.
 
         In the generated .c contains data for the binary search and the function
@@ -186,10 +186,10 @@ class MPQP:
             max_reals: upper limit on the number of real numbers
         """
         return ParametricDAQP.codegen(self.solution,dir=dir,fname=fname,float_type=float_type,
-                                      int_type=int_type, max_reals=max_reals, dual=dual,bfs=bfs)
+                                      int_type=int_type, max_reals=max_reals, dual=dual,bfs=bfs, clipping=clipping)
 
-    def build_tree(self):
-        bst = ParametricDAQP.build_tree(self.solution)
+    def build_tree(self,dual=False,bfs=True,clipping=False):
+        bst = ParametricDAQP.build_tree(self.solution,dual=dual,bfs=bfs,clipping=clipping)
         hps = np.array(bst.halfplanes,copy=False, order='F').T
         hp_list = np.array(bst.hp_list,copy=True)-1
         jump_list = np.array(bst.jump_list,copy=True)
