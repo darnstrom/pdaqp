@@ -11,6 +11,8 @@ $$
 where $H \succ 0$ and $\Theta \triangleq \lbrace l \leq \theta \leq u : A_{\theta} \theta \leq b_{\theta}\rbrace$.
 
 **pdaqp** is based on the Julia package [ParametricDAQP.jl](https://github.com/darnstrom/ParametricDAQP.jl/) and the Python module [juliacall](https://juliapy.github.io/PythonCall.jl/stable/juliacall/).  More information about the underlying algorithm and numerical experiments can be found in the paper ["A High-Performant Multi-Parametric Quadratic Programming Solver"](https://arxiv.org/abs/2404.05511).
+
+**pdaqp** is also the used in [CVXPYgen](https://github.com/cvxgrp/cvxpygen#explicitly-solving-problems) to compute explicit solutions. For more information, see the following [manuscript](https://stanford.edu/~boyd/papers/cvxpygen_mpqp.html).
  
 
 ## Installation
