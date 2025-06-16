@@ -1,18 +1,25 @@
-import numpy as np
-from collections import namedtuple
-from dataclasses import dataclass
+import os
 
-from types import ModuleType
-from typing import cast
+os.environ["PYTHON_JULIACALL_HANDLE_SIGNALS"] = os.environ.get("PYTHON_JULIACALL_HANDLE_SIGNALS", "yes")
+os.environ["PYTHON_JULIACALL_THREADS"] = os.environ.get("PYTHON_JULIACALL_THREADS", "auto")
+os.environ["PYTHON_JULIACALL_OPTLEVEL"] = os.environ.get("PYTHON_JULIACALL_OPTLEVEL", "3")
+
 from juliacall import Main as jl
 from juliacall import AnyValue
-from .plot import plot 
 
 jl = cast(ModuleType, jl)
 jl_version = (jl.VERSION.major, jl.VERSION.minor, jl.VERSION.patch)
 
 jl.seval("using ParametricDAQP")
 ParametricDAQP = jl.ParametricDAQP
+
+import numpy as np
+from collections import namedtuple
+from dataclasses import dataclass
+
+from types import ModuleType
+from typing import cast
+from .plot import plot 
 
 MPQPDATA = namedtuple('MPQPDATA',['H','f','F','A','b','B','bounds_table','out_inds','eq_ids'])
 TH = namedtuple('TH', ['lb', 'ub'])

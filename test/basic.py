@@ -1,9 +1,9 @@
 """
 Test pdaqp 
 """
+from pdaqp import MPQP
 import unittest
 import numpy
-from pdaqp import MPQP
 
 class Testing(unittest.TestCase):
     """Testing class for pdaqp."""
@@ -24,7 +24,6 @@ class Testing(unittest.TestCase):
         mpQP.solve()
 
         self.assertEqual(len(mpQP.CRs), 9)
-
 
 if __name__ == '__main__':
     unittest.main()
