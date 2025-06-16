@@ -1,4 +1,6 @@
 import os
+from types import ModuleType
+from typing import cast
 
 os.environ["PYTHON_JULIACALL_HANDLE_SIGNALS"] = os.environ.get("PYTHON_JULIACALL_HANDLE_SIGNALS", "yes")
 os.environ["PYTHON_JULIACALL_THREADS"] = os.environ.get("PYTHON_JULIACALL_THREADS", "auto")
@@ -16,9 +18,6 @@ ParametricDAQP = jl.ParametricDAQP
 import numpy as np
 from collections import namedtuple
 from dataclasses import dataclass
-
-from types import ModuleType
-from typing import cast
 from .plot import plot 
 
 MPQPDATA = namedtuple('MPQPDATA',['H','f','F','A','b','B','bounds_table','out_inds','eq_ids'])
