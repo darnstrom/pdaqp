@@ -1,6 +1,6 @@
 [project]
 name = "pdaqp"
-version = "0.6.4"
+version = "0.6.5"
 description = "A multi-parametric quadratic programming solver"
 readme = "README.md"
 authors = [
