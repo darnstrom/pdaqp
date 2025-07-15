@@ -1,6 +1,6 @@
 [project]
 name = "pdaqp"
-version = "0.6.6"
+version = "0.6.7"
 description = "A multi-parametric quadratic programming solver"
 readme = "README.md"
 authors = [
@@ -8,7 +8,7 @@ authors = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "juliacall==0.9.25",
+    "juliacall==0.9.26",
     "numpy",
 ]
 
