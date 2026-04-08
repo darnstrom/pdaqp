@@ -93,6 +93,135 @@ class BinarySearchTree:
 
 
 
+class MPVI:
+    """ A Multi-parametric Variational Inequality (VI)
+
+    Find x*(theta) such that (Hx + G*theta + f)'*(y - x) >= 0 for all y in C(theta)
+    where C(theta) = {x : A*x <= E*theta + b}
+
+    When H is symmetric positive definite, this is equivalent to:
+    minimize_x  0.5 x' H x + (f + G theta)'x
+    subject to  A x <= b + E theta
+
+    The parameter theta is in the set TH0 defined by thmin <= theta <= thmax
+
+    Attributes:
+        mpVI: The problem data H,G,f,A,b,E that defines the mpVI
+        TH0: The bounds thmin,thmax that defines the set of parameters of interest
+        CRs: The critical regions that comprise the solution of the mpVI
+        solution: The solution structure directly from Julia
+        solution_info: Information from the solving process
+    """
+    mpVI: MPQPDATA  # reuses MPQPDATA with fields H,f(=f),F(=G),A,b,B(=E)
+    TH0: TH
+    CRs: list
+    solution: AnyValue
+    solution_info: AnyValue
+
+    def __init__(self, H, G, f, A, E, b, thmin, thmax):
+        self.mpVI = MPQPDATA(H, f, G, A, b, E, None, None, None)
+        self.TH0  = TH(thmin, thmax)
+        self.CRs = None
+        self.solution = None
+        self.solution_info = None
+
+    def solve(self, settings=None):
+        """ Computes the explicit solution to the mpVI.
+
+        The critical regions are stored in the variable CRs.
+        Information from the solving process is stored in
+        the variable solution_info.
+        The internal Julia solution struct is stored
+        in the variable solution
+        """
+        self.solution, self.solution_info = ParametricDAQP.mpsolve(self.mpVI, self.TH0, opts=settings)
+        self.CRs = [CriticalRegion(np.array(cr.Ath, copy=False, order='F').T,
+                             np.array(cr.bth, copy=False),
+                             np.array(cr.z, copy=False, order='F').T,
+                             np.array(cr.lam, copy=False, order='F').T,
+                             np.array(cr.AS)-1
+                             ) for cr in ParametricDAQP.get_critical_regions(self.solution)]
+
+    def plot_regions(self, fix_ids=None, fix_vals=None, backend='tikz'):
+        """ A 2D plot of the critical regions of the solution to the mpVI.
+
+        Args:
+            fix_ids: ids of parameters to fix. Defaults to all ids except
+              the first and second.
+            fix_vals: Corresponding values for the fixed parameters. Defaults to 0.
+            backend: Determine if tikz or plotly should be used as plotting backend.
+              Defaults to tikz (which is what ParametricDAQP.jl uses)
+        """
+        if backend == 'tikz':
+            jl.display(ParametricDAQP.plot_regions(self.solution, fix_ids=fix_ids, fix_vals=fix_vals))
+        elif backend == 'plotly':
+            plot(self.CRs, fix_ids=fix_ids, fix_vals=fix_vals)
+        else:
+            print('Plotting backend ' + backend + ' unknown')
+
+    def plot_solution(self, z_id=0, fix_ids=None, fix_vals=None, backend='tikz'):
+        """ A 3D plot of component z_id of the solution to the mpVI.
+
+        Args:
+            z_id: id of the component of the solution to plot.
+              Defaults to the first component
+            fix_ids: ids of parameters to fix. Defaults to all ids except
+              the first and second.
+            fix_vals: Corresponding values for the fixed parameters. Defaults to 0.
+            backend: Determine if tikz or plotly should be used as plotting backend.
+              Defaults to tikz (which is what ParametricDAQP.jl uses.)
+        """
+        if backend == 'tikz':
+            jl.display(ParametricDAQP.plot_solution(self.solution, z_id=z_id+1, fix_ids=fix_ids, fix_vals=fix_vals))
+        elif backend == 'plotly':
+            plot(self.CRs, out_id=z_id, fix_ids=fix_ids, fix_vals=fix_vals)
+        else:
+            print('Plotting backend ' + backend + ' unknown')
+
+    def codegen(self, dir="codegen", fname="pdaqp", float_type="float",
+                c_float_store=None, int_type="unsigned short",
+                max_reals=1e12, dual=False, bfs=True, clipping=False):
+        """ Forms a binary search tree and generates C-code for performing the pointlocation.
+
+        The generated .c file contains data for the binary search and the function
+        {fname}_evaluate(parameter,solution) which performs the point location
+          "parameter" is the parameter theta (a pointer to a float array)
+          "solution" is where the solution z is stored  (a pointer to a float array)
+
+        Args:
+            dir: directory where the generated code should be stored.
+            fname: name of the .c and .h files. Also serves as a prefix in the generated code.
+            float_type: type of floating point number that is used in the C-code.
+            int_type: type of integer that is used in the C-code.
+            max_reals: upper limit on the number of real numbers
+        """
+        if c_float_store is None: c_float_store = float_type
+        return ParametricDAQP.codegen(self.solution, dir=dir, fname=fname,
+                                      float_type=float_type, c_float_store=c_float_store,
+                                      int_type=int_type, max_reals=max_reals, dual=dual, bfs=bfs, clipping=clipping)
+
+    def build_tree(self, dual=False, bfs=True, clipping=False):
+        bst = ParametricDAQP.build_tree(self.solution, dual=dual, bfs=bfs, clipping=clipping)
+        hps = np.array(bst.halfplanes, copy=False, order='F').T
+        hp_list = np.array(bst.hp_list, copy=True)-1
+        jump_list = np.array(bst.jump_list, copy=True)
+
+        nodes = [BSTNode(None, None, None, None) for i in range(len(hp_list))]
+        leaf_ids = []
+
+        for i in range(len(hp_list)):
+            if jump_list[i] == 0:  # Is a leaf node
+                nodes[i].affine_mapping = np.array(bst.feedbacks[hp_list[i]], copy=False, order='F').T
+                leaf_ids.append(i)
+            else:
+                rid, lid = i+jump_list[i], i+jump_list[i]+1
+                nodes[i].right_id, nodes[i].left_id = rid, lid
+                nodes[i].affine_mapping = hps[hp_list[i], :]
+                nodes[rid].parent_id, nodes[lid].parent_id = i, i
+
+        return BinarySearchTree(nodes, bst.depth, leaf_ids, bst)
+
+
 class MPQP:
     """ A Multi-parametric quadratic program
 
