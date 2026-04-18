@@ -179,7 +179,8 @@ class MPQP:
 
     def codegen(self, dir="codegen",fname="pdaqp", float_type="float",
                 c_float_store=None, int_type="unsigned short",
-                max_reals=1e12,dual=False, bfs=True, clipping=False):
+                max_reals=1e12,dual=False, bfs=True, clipping=False, 
+                store_transpose=False, store_offset=False):
         """ Forms a binary search tree and generates C-code for performing the pointlocation.
 
         In the generated .c contains data for the binary search and the function
@@ -195,8 +196,10 @@ class MPQP:
             max_reals: upper limit on the number of real numbers
         """
         if c_float_store is None: c_float_store = float_type
-        return ParametricDAQP.codegen(self.solution,dir=dir,fname=fname,float_type=float_type, c_float_store=c_float_store,
-                                      int_type=int_type, max_reals=max_reals, dual=dual,bfs=bfs, clipping=clipping)
+        return ParametricDAQP.codegen(self.solution,dir=dir,fname=fname,float_type=float_type,
+                                      c_float_store=c_float_store, int_type=int_type,
+                                      max_reals=max_reals, dual=dual,bfs=bfs, clipping=clipping,
+                                      store_transpose=store_transpose, store_offset=store_offset)
 
     def build_tree(self,dual=False,bfs=True,clipping=False):
         bst = ParametricDAQP.build_tree(self.solution,dual=dual,bfs=bfs,clipping=clipping)
